@@ -1,0 +1,5 @@
+# Claude Code: personal files that must not be committed
+.claude/settings.local.json
+CLAUDE.local.md
+.claude/agent-memory-local/
+.claude/worktrees/

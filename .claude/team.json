@@ -1,0 +1,165 @@
+{
+  "$comment": "Dev team configuration read by the hooks in .claude/hooks. Paths and globs are relative to the project root and use gitignore style patterns. Run /team-init to adapt it to a repository; see README for every field.",
+  "version": 1,
+
+  "workflow": {
+    "specs": "docs/specs",
+    "plans": "docs/specs/*.plan.md",
+    "adr": "docs/adr"
+  },
+
+  "quality": {
+    "enabled": true,
+    "maxBlocks": 3,
+    "tailLines": 30,
+    "subagentGate": ["backend", "frontend", "debugger", "devops"],
+    "checks": [
+      {
+        "name": "dotnet-build",
+        "when": ["**/*.cs", "**/*.csproj", "**/*.props", "**/*.targets", "**/*.sln", "**/*.slnx", "**/*.razor", "**/*.cshtml", "**/appsettings*.json", "global.json"],
+        "run": "dotnet build --nologo -v q",
+        "cwd": "{solution-dir}",
+        "on": ["stop", "subagent", "verify", "ship"],
+        "agents": ["backend", "debugger"],
+        "requires": "dotnet"
+      },
+      {
+        "name": "dotnet-test",
+        "when": ["**/*.cs", "**/*.csproj", "**/*.props", "**/*.targets", "**/*.sln", "**/*.slnx", "**/*.razor", "**/*.cshtml", "**/appsettings*.json", "global.json"],
+        "run": "dotnet test --no-build",
+        "cwd": "{solution-dir}",
+        "on": ["stop", "verify", "ship"],
+        "requires": "dotnet"
+      },
+      {
+        "name": "dotnet-format",
+        "when": ["**/*.cs", "**/.editorconfig"],
+        "run": "dotnet format --verify-no-changes --no-restore -v q",
+        "cwd": "{solution-dir}",
+        "on": ["ship"],
+        "requires": "dotnet"
+      },
+      {
+        "name": "dotnet-vulnerable",
+        "when": ["**/*.csproj", "**/Directory.Packages.props"],
+        "run": "dotnet list package --vulnerable --include-transitive",
+        "cwd": "{solution-dir}",
+        "failOn": "has the following vulnerable packages",
+        "on": ["verify", "ship"],
+        "requires": "dotnet"
+      },
+      {
+        "name": "web-build",
+        "when": ["src/web/**"],
+        "run": "npm run build -- --configuration development",
+        "cwd": "src/web",
+        "on": ["stop", "subagent", "verify"],
+        "agents": ["frontend", "debugger"],
+        "requires": "npm"
+      },
+      {
+        "name": "web-test",
+        "when": ["src/web/**"],
+        "run": "npm test -- --watch=false",
+        "cwd": "src/web",
+        "on": ["stop", "verify", "ship"],
+        "requires": "npm"
+      },
+      {
+        "name": "web-lint",
+        "when": ["src/web/**"],
+        "run": "npm run lint",
+        "cwd": "src/web",
+        "on": ["verify", "ship"],
+        "requires": "npm",
+        "enabled": false
+      },
+      {
+        "name": "web-build-prod",
+        "when": ["src/web/**"],
+        "run": "npm run build",
+        "cwd": "src/web",
+        "on": ["ship"],
+        "requires": "npm"
+      },
+      {
+        "name": "npm-audit",
+        "when": ["src/web/package.json", "src/web/package-lock.json"],
+        "run": "npm audit --omit=dev --audit-level=high",
+        "cwd": "src/web",
+        "on": ["verify", "ship"],
+        "requires": "npm"
+      },
+      {
+        "name": "secrets-scan",
+        "run": "gitleaks git --no-banner --redact --log-opts=\"{base}..HEAD\" .",
+        "on": ["ship"],
+        "requires": "gitleaks"
+      },
+      {
+        "name": "actionlint",
+        "enabled": false,
+        "when": [".github/workflows/**"],
+        "run": "actionlint",
+        "on": ["stop", "subagent", "verify", "ship"],
+        "agents": ["devops"],
+        "requires": "actionlint"
+      }
+    ]
+  },
+
+  "format": [
+    { "when": ["**/*.cs"], "run": "dotnet format whitespace --folder --include {relpath}", "cwd": "file", "requires": "dotnet" },
+    { "when": ["**/*.{ts,tsx,js,jsx,mjs,cjs,vue,html,css,scss,less,json,yml,yaml,md}"], "run": "npx --no-install prettier --write --log-level warn {file}", "cwd": "nearest:node_modules/prettier/package.json", "requires": "npx" },
+    { "when": ["**/*.py"], "run": "ruff format --quiet {file}", "requires": "ruff" },
+    { "when": ["**/*.php"], "run": "php vendor/bin/phpcbf -q {file}", "cwd": "nearest:vendor/bin/phpcbf", "requires": "php", "enabled": false },
+    { "when": ["**/*.tf"], "run": "terraform fmt {file}", "requires": "terraform" }
+  ],
+
+  "scopes": {
+    "analyst": ["docs/specs/**", "docs/project/**"],
+    "architect": ["docs/**"],
+    "docs": ["docs/**", "**/*.md", "**/*.mdx", "CHANGELOG*", "**/README*"],
+    "reviewer": [],
+    "security": ["docs/project/**", "docs/specs/**"],
+    "explore": [],
+    "tester": [
+      "tests/**", "test/**", "**/tests/**", "**/test/**", "**/*Tests/**", "**/*.Tests/**", "**/*.Test/**", "**/*.Specs/**",
+      "**/*.spec.ts", "**/*.test.ts", "**/*.spec.tsx", "**/*.test.tsx", "**/*.spec.js", "**/*.test.js", "**/*.spec.mjs", "**/*.test.mjs",
+      "**/__tests__/**", "**/__mocks__/**", "**/testing/**", "**/e2e/**", "**/playwright/**", "**/fixtures/**", "**/testdata/**",
+      "**/test_*.py", "**/*_test.py", "**/conftest.py", "**/*Test.php",
+      "**/vitest.config.*", "**/vitest.workspace.*", "**/playwright.config.*", "**/jest.config.*", "**/karma.conf.*", "**/pytest.ini", "**/phpunit.xml*", "**/test-setup.ts", "**/setup-tests.ts", "**/tsconfig.spec.json"
+    ],
+    "devops": [
+      ".github/**", "infra/**", "deploy/**", "deployment/**", "scripts/**", "docs/**",
+      "**/Dockerfile*", "**/*.dockerfile", "**/.dockerignore", "**/docker-compose*.yml", "**/docker-compose*.yaml", "**/compose*.yml", "**/compose*.yaml",
+      "**/*.bicep", "**/*.bicepparam", "**/*.tf", "**/*.tfvars", "azure.yaml", "**/k8s/**", "**/helm/**", "**/charts/**",
+      "**/*.ps1", "**/*.sh", "global.json", "nuget.config", "NuGet.config", ".config/**",
+      "Directory.Build.props", "Directory.Build.targets", "Directory.Packages.props", ".editorconfig", ".gitattributes", ".gitignore", ".nvmrc", ".node-version"
+    ]
+  },
+
+  "protect": {
+    "secretFiles": ["**/.env", "**/.env.*", "!**/.env.example", "!**/.env.sample", "!**/.env.template", "!**/.env.defaults", "**/*.pfx", "**/*.p12", "**/*.pem", "**/*.key", "**/*.jks", "**/*.keystore", "**/*.ppk", "**/*.publishsettings", "**/secrets.json", "**/id_rsa*", "**/id_ed25519*", "!**/*.pub", "**/.git-credentials", "**/.ssh/**", "**/.aws/credentials", "**/UserSecrets/**", "**/usersecrets/**"],
+    "setupFiles": [".claude/settings.json", ".claude/settings.local.json", ".claude/team.json", ".claude/hooks/**", ".claude/agents/**", ".claude/skills/**", ".claude/rules/**", ".claude/templates/**", ".mcp.json", "CLAUDE.md", "CLAUDE.local.md", "REVIEW.md"],
+    "generated": ["**/bin/**", "**/obj/**", "**/node_modules/**", "**/.angular/**", "**/.next/**", "**/dist/**", "**/coverage/**", "**/TestResults/**", "**/__pycache__/**", "**/.venv/**", "**/vendor/**"],
+    "lockfiles": ["**/package-lock.json", "**/npm-shrinkwrap.json", "**/pnpm-lock.yaml", "**/yarn.lock", "**/bun.lockb", "**/packages.lock.json", "**/poetry.lock", "**/uv.lock", "**/Pipfile.lock", "**/composer.lock", "**/Cargo.lock", "**/go.sum"],
+    "committedMigrations": ["**/Migrations/*.cs"],
+    "secretScanSkip": [".claude/hooks/tests/**"]
+  },
+
+  "guard": {
+    "protectedBranches": ["main", "master", "develop", "release/*", "production"],
+    "readOnlyAgents": ["reviewer", "security", "architect", "analyst", "explore"],
+    "npxAllow": ["prettier", "eslint", "tsc", "typescript", "ng", "@angular/cli", "vitest", "jest", "playwright", "@playwright/test", "@playwright/cli", "playwright-cli", "tsx", "ts-node", "rimraf", "next", "vite", "nx", "stylelint", "npm-check-updates", "ncu", "concurrently", "cross-env", "http-server", "serve", "create-next-app", "@angular/create", "wp-env", "@wordpress/env", "markdownlint-cli2", "pyright"],
+    "uvxAllow": ["ruff", "black", "pytest", "mypy", "pyright", "pre-commit", "tox", "nox", "pip-audit"],
+    "buildOutputs": ["bin", "obj", "node_modules", "dist", ".angular", "coverage", "TestResults", "out", "build", ".next", ".nuxt", ".turbo", ".vite", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", "artifacts", "publish", ".cache", "tmp", "temp", ".venv", "venv", "playwright-report", "test-results"],
+    "extraRules": [
+      {
+        "pattern": "(?i)\\b(azd\\s+deploy|azd\\s+up|az\\s+webapp\\s+deploy|az\\s+functionapp\\s+deploy|az\\s+containerapp\\s+update)\\b.*\\b(prod|production|live)\\b",
+        "decision": "deny",
+        "reason": "Production deploys go through the release pipeline, never from a Claude session."
+      }
+    ]
+  }
+}
