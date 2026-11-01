@@ -89,7 +89,9 @@ describe('LogoSvg', () => {
   it('uses a system font stack and no web font (AC7)', () => {
     render(5);
     const family = svg().querySelector('text')?.getAttribute('font-family') ?? '';
-    expect(family).toContain('sans-serif');
+    expect(family).toBe(
+      "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+    );
     expect(family).not.toMatch(/url\(|https?:/i);
   });
 

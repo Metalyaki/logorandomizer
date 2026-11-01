@@ -6,6 +6,8 @@ const PLATE_Y = 360;
 const PLATE_HEIGHT = 104;
 const MAX_BASE_LENGTH = 40;
 const FALLBACK_FILE_NAME = 'logo.svg';
+/** System font stack, no web font. Escaped on output, so the quotes stay valid XML. */
+const FONT_STACK = "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
 
 const XML_ESCAPES: Record<string, string> = {
   '&': '&amp;',
@@ -49,7 +51,7 @@ export function toSvgString(logo: Logo): string {
     `<rect x="0" y="0" width="${BOX}" height="${BOX}" fill="${esc(logo.background)}"/>` +
     `<g>${shapes}</g>` +
     `<rect x="0" y="${PLATE_Y}" width="${BOX}" height="${PLATE_HEIGHT}" fill="${esc(logo.plate)}"/>` +
-    `<text x="${BOX / 2}" y="${textY}" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-weight="700" font-size="${esc(logo.fontSize)}" fill="${esc(logo.textColor)}">${esc(logo.name)}</text>` +
+    `<text x="${BOX / 2}" y="${textY}" text-anchor="middle" dominant-baseline="central" font-family="${esc(FONT_STACK)}" font-weight="700" font-size="${esc(logo.fontSize)}" fill="${esc(logo.textColor)}">${esc(logo.name)}</text>` +
     `</svg>`
   );
 }

@@ -23,6 +23,45 @@ test('axe: no WCAG 2.2 AA violations after load and after each button', async ({
   await scan(page);
 });
 
+test('keyboard: Space on Previous until disabled moves focus to Randomize (AC19)', async ({
+  page,
+}) => {
+  await openApp(page);
+  const name = () => page.locator('[aria-live="polite"]').textContent();
+  await randomizeButton(page).click();
+  await randomizeButton(page).click();
+
+  await previousButton(page).focus();
+  for (let i = 0; i < 5 && (await previousButton(page).isEnabled()); i++) {
+    const before = await name();
+    await page.keyboard.press('Space');
+    await expect.poll(name).not.toBe(before);
+  }
+  await expect(previousButton(page)).toBeDisabled();
+  await expect(randomizeButton(page)).toBeFocused();
+});
+
+test('keyboard: Enter on Download SVG downloads and keeps focus and state (AC19)', async ({
+  page,
+}) => {
+  await openApp(page);
+  const name = () => page.locator('[aria-live="polite"]').textContent();
+  await randomizeButton(page).click();
+  const before = await name();
+  const previousEnabled = await previousButton(page).isEnabled();
+
+  await downloadButton(page).focus();
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.keyboard.press('Enter'),
+  ]);
+  expect(download.suggestedFilename()).toMatch(/\.svg$/);
+
+  await expect(downloadButton(page)).toBeFocused();
+  expect(await name()).toBe(before);
+  expect(await previousButton(page).isEnabled()).toBe(previousEnabled);
+});
+
 test('keyboard: Enter and Space activate Randomize, focus stays, focus ring is visible', async ({
   page,
 }) => {

@@ -29,7 +29,7 @@ Run these in `src/web`.
 | Production build | `npm run build` |
 | End-to-end tests (Playwright) | `npm run e2e` |
 
-The end-to-end tests run on Chromium, Firefox and WebKit. Install the browsers once:
+The end-to-end tests run on Chromium, Firefox and WebKit. They serve the built app from `dist/web/browser`, so run `npm run build` before `npm run e2e` (and again after code changes). Install the browsers once:
 
 ```powershell
 npx playwright install chromium firefox webkit

@@ -1,6 +1,6 @@
 # Deploy
 
-The site is a static Angular build served by Azure Static Web Apps (Free tier). The workflow `.github/workflows/web-deploy.yml` builds `src/web` and uploads `src/web/dist/web/browser` on every push to `main` that touches `src/web`, or by manual run. The job runs in the GitHub environment `production`, so a required reviewer must approve each run.
+The site is a static Angular build served by Azure Static Web Apps (Free tier). The workflow `.github/workflows/web-deploy.yml` builds `src/web` (job `build`, no secrets) and then uploads the built artifact in a second job `deploy`, on every push to `main` that touches `src/web`, or by manual run. Only the `deploy` job runs in the GitHub environment `production`, so a required reviewer must approve each run and the token is only available there.
 
 Nothing in this repository deploys from a developer machine. The commands below are for the owner.
 
@@ -35,9 +35,22 @@ az staticwebapp secrets list --name $app --resource-group $rg --query "propertie
   gh secret set AZURE_STATIC_WEB_APPS_API_TOKEN --env production --repo $repo
 ```
 
-### 3. Require a reviewer on `production`
+### 3. Protect `production` and `main` (required)
 
-In GitHub: Settings, Environments, `production`, enable Required reviewers and add yourself (or the release approver). Optionally restrict Deployment branches to `main`. Without a reviewer the deploy runs unattended.
+Without these, code that failed CI can be deployed. Do both before the first deploy.
+
+Environment `production` (Settings, Environments, `production`):
+
+- Enable Required reviewers and add yourself (or the release approver). Without a reviewer the deploy runs unattended.
+- Under Deployment branches and tags, select Selected branches and tags and add `main` only. This is required: it stops a manual run from any other branch from reaching the token.
+
+Branch protection on `main` (Settings, Branches, rule or ruleset for `main`):
+
+- Require a pull request before merging.
+- Require status checks to pass before merging, and add the check `web` (job `web` of workflow `web-ci`, shown in the PR as `web-ci / web`). Enable Require branches to be up to date before merging.
+- Block force pushes and do not allow bypassing.
+
+The deploy workflow runs only on pushes to `main`, so with this rule every commit it deploys has passed `web-ci`. The `web` check runs when `src/web` or the CI workflow changes, the same paths that trigger the deploy.
 
 ### 4. Set the URL variable for the smoke check
 
