@@ -68,7 +68,7 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: E2E tests
         run: npm run e2e
