@@ -2,6 +2,15 @@
 
 Newest first. Written by `/handoff` at the end of a session so the next session can start cheaply with `/clear`. Keep at most ten entries; older ones are removed (git history keeps them).
 
+## 2026-11-01 | feature/0001-logo-randomizer | 33b469a
+- **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
+- **Done this session**: S4 test first and implemented (logo-generator.ts: generateLogo, isValidLogo, logoKey); committed 33b469a; plan ticked and progress log updated (5 of 15 steps)
+- **State**: build, 72 tests, lint and audit green; uncommitted: .claude/agent-memory/ (untracked agent notes)
+- **Decisions**: shape coordinates bounded to -512..1024 by the implementer (plan gave none); fontSize max 34 for 25 chars at 0.6em glyph width; logoKey is JSON.stringify(logo)
+- **Open questions**: none
+- **Watch out**: no git remote yet, ask before any push; S13 and S14 are high risk (security plus reviewer on opus); the stop gate stays red between test-first and implementation, so run the tester and the implementer in the same turn and wait for the implementer; run team-init once src/web has real content (CLAUDE.md still says FILL IN)
+- **Next**: `/feature 0001`, then S6 and S7 (S8 to S10 follow; S11 and S13 may run in parallel)
+
 ## 2026-11-01 | feature/0001-logo-randomizer | 2623887
 - **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
 - **Done this session**: S2, S3, S5 test first and implemented (random, color, words, name, logo-history), plus the types in logo.model.ts (part of S4); committed 2623887; plan ticked and progress log updated
