@@ -118,3 +118,4 @@ None. The app has no endpoints.
 
 ## Progress log
 Appended by the lead after each step.
+- 2026-11-01: Spec and plan approved and committed (0335481). Done: no code yet. Next: /feature 0001, starting with S1.
