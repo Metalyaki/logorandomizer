@@ -2,6 +2,15 @@
 
 Newest first. Written by `/handoff` at the end of a session so the next session can start cheaply with `/clear`. Keep at most ten entries; older ones are removed (git history keeps them).
 
+## 2026-11-01 | feature/0001-logo-randomizer | 62a749e
+- **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
+- **Done this session**: S12 e2e suite (playwright.config.ts, e2e/serve.mjs, 9 spec files, 96 tests green on Chromium, Firefox, WebKit), committed 62a749e; web-ci.yml installs all three browsers
+- **State**: build, 147 unit tests, e2e, lint and audit green; uncommitted: .claude/agent-memory/ (untracked agent notes)
+- **Decisions**: removed `<base href="/">` from index.html (violated CSP base-uri 'none'; no router); no `blob:` needed in CSP (SR10 confirmed); noscript spec checks innerHTML, not visibility
+- **Open questions**: none
+- **Watch out**: S14 is High risk (CI/deploy): security review plus reviewer on opus; deploy token only in `production` environment with required reviewer; smoke check asserts nosniff, Referrer-Policy and HTTP to HTTPS redirect. web-ci.yml is unproven until a PR runs it. Deploy and push need the user's approval (check `git remote -v` first)
+- **Next**: `/feature 0001` for S14 (devops), then S15 (docs)
+
 ## 2026-11-01 | feature/0001-logo-randomizer | efbc48d
 - **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
 - **Done this session**: S11 (staticwebapp.config.json headers, e2e/config.spec.ts, 7 tests) and S13 (web-ci.yml, dependabot.yml) committed 0604fb9 and efbc48d; S13 security reviewed, no High, 3 findings fixed; plan ticked (12 of 15 steps)
