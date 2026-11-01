@@ -2,6 +2,15 @@
 
 Newest first. Written by `/handoff` at the end of a session so the next session can start cheaply with `/clear`. Keep at most ten entries; older ones are removed (git history keeps them).
 
+## 2026-11-01 | feature/0001-logo-randomizer | d136e18
+- **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md, Status: done)
+- **Done this session**: S14 (deploy workflow, docs/deploy.md), S15 (README, CHANGELOG, owner checklist), coverage pass (every AC and SR mapped to a passing test), two review rounds (security plus reviewer on opus): no open Blocking, Critical or High; ship checks green
+- **State**: 147 unit tests, 102 e2e tests, lint, build and audit green; uncommitted: .claude/agent-memory/ only; no git remote yet
+- **Decisions**: deploy split into build job (no secrets) and deploy job (`production`); web-ci runs on every PR so a required check never blocks docs-only PRs; S7 MAX_ATTEMPTS is 20 not 5; HSTS header not added
+- **Open questions**: add an HSTS header (Low)? Create a private GitHub repo and push?
+- **Watch out**: nothing has deployed; before the first deploy the owner sets branch protection on main (required check `web-ci / web`), the `production` environment (required reviewer, main only), secret `AZURE_STATIC_WEB_APPS_API_TOKEN`, variable `SWA_URL`; web-ci and web-deploy are unproven until a PR and a deploy run; owner release checklist in docs/deploy.md is unticked (word list, fonts, deployed AC18, performance)
+- **Next**: `/ship`
+
 ## 2026-11-01 | feature/0001-logo-randomizer | 62a749e
 - **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
 - **Done this session**: S12 e2e suite (playwright.config.ts, e2e/serve.mjs, 9 spec files, 96 tests green on Chromium, Firefox, WebKit), committed 62a749e; web-ci.yml installs all three browsers
