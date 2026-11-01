@@ -65,9 +65,26 @@ az staticwebapp secrets reset-api-key --name $app --resource-group $rg
 
 ## Owner release checklist
 
-Extended by S15. Tick before announcing a release.
+Tick before announcing a release.
 
-- [ ] Word list reviewed for offensive or trademarked words
-- [ ] Visual and font check on the deployed site
-- [ ] Deployed download check (AC18)
-- [ ] Performance check
+### Word list
+
+- [ ] Read every word in `src/web/src/app/logo/words.ts`. Remove or replace any word that is offensive, or that is a trademark or brand name. Run `npm test -- --watch=false` in `src/web` afterwards (`words.spec.ts` checks format, duplicates and a minimum of 50 words).
+
+### Look and fonts
+
+- [ ] Open the deployed site on Windows, macOS and Linux. Press Randomize about 30 times on each.
+- [ ] The name always fits on the plate and is not clipped, including long names.
+- [ ] Text is readable against every background color.
+- [ ] Check at a narrow window (about 320 px) and a wide one (1920 px).
+
+### Deployed download (AC18)
+
+- [ ] On the live site, press Download SVG. A file named after the logo (for example `bold-panda.svg`) is saved and opens in a browser or editor.
+- [ ] DevTools Console shows no Content-Security-Policy violation while using all three buttons.
+- [ ] DevTools Network, response headers of the page show the Content-Security-Policy, `X-Content-Type-Options: nosniff` and `Referrer-Policy: no-referrer`.
+
+### Performance
+
+- [ ] DevTools Performance panel: record one press of Randomize. A new logo is visible within 100 ms.
+- [ ] Build in `src/web` with `npm run build`. The initial bundle is under 200 kB gzipped. For each initial file listed in the build output, compare the "Estimated transfer size" column, or gzip the files in `dist/web/browser` and add up the sizes.
