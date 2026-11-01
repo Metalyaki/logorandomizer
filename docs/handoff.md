@@ -2,6 +2,15 @@
 
 Newest first. Written by `/handoff` at the end of a session so the next session can start cheaply with `/clear`. Keep at most ten entries; older ones are removed (git history keeps them).
 
+## 2026-11-01 | feature/0001-logo-randomizer | 0cb3d40
+- **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
+- **Done this session**: S8 (svg-download.ts: SvgDownload) and S9 (logo-svg.ts/.html: LogoSvg) test first and implemented; committed 0d42f72 and 0cb3d40; plan ticked and progress log updated (9 of 15 steps)
+- **State**: build, 127 tests, lint and audit green; uncommitted: .claude/agent-memory/ (untracked agent notes)
+- **Decisions**: LogoSvg sizes the svg with `[style.width]`/`[style.height]` bindings (CSSOM, CSP safe); name is bound with `[textContent]` because prettier adds whitespace around `{{ }}` inside `<text>` and breaks parity with toSvgString; do not change back to interpolation
+- **Open questions**: none
+- **Watch out**: no git remote yet, ask before any push; S13 and S14 are high risk (security plus reviewer on opus); the stop gate goes red between test-first and implementation (and while an implementer is mid-write), so start tester and implementer in the same turn and wait for the implementer; run team-init once src/web has real content (CLAUDE.md still says FILL IN)
+- **Next**: `/feature 0001`, then S10 (app shell, styles, a11y); S11 and S13 may run in parallel
+
 ## 2026-11-01 | feature/0001-logo-randomizer | d57290a
 - **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
 - **Done this session**: S6 (svg-export.ts: toSvgString, toFileName) and S7 (logo-store.ts: LogoStore, GENERATE_LOGO token) test first and implemented; committed d57290a; plan ticked, decisions and progress logs updated (7 of 15 steps)
