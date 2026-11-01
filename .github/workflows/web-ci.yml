@@ -1,0 +1,74 @@
+name: web-ci
+
+on:
+  pull_request:
+    paths:
+      - "src/web/**"
+      - ".github/workflows/web-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/web/**"
+      - ".github/workflows/web-ci.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: src/web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unsafe API grep (SR1)
+        run: |
+          set +e
+          grep -rnE --exclude='*.spec.ts' 'innerHTML|outerHTML|insertAdjacentHTML|document\.write|bypassSecurityTrust' src
+          rc=$?
+          set -e
+          if [ "$rc" -eq 0 ]; then
+            echo "::error::Unsafe DOM or sanitizer-bypass API found in src/web/src"
+            exit 1
+          elif [ "$rc" -ne 1 ]; then
+            echo "::error::grep failed with exit code $rc"
+            exit "$rc"
+          fi
+
+      - name: Unit tests
+        run: npm test -- --watch=false
+
+      - name: Build (budgets enforced)
+        run: npm run build
+
+      - name: Audit (high and critical)
+        run: npm audit --audit-level=high
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E tests
+        run: npm run e2e
