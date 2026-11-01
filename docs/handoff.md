@@ -2,6 +2,15 @@
 
 Newest first. Written by `/handoff` at the end of a session so the next session can start cheaply with `/clear`. Keep at most ten entries; older ones are removed (git history keeps them).
 
+## 2026-11-01 | feature/0001-logo-randomizer | d57290a
+- **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
+- **Done this session**: S6 (svg-export.ts: toSvgString, toFileName) and S7 (logo-store.ts: LogoStore, GENERATE_LOGO token) test first and implemented; committed d57290a; plan ticked, decisions and progress logs updated (7 of 15 steps)
+- **State**: build, 109 tests, lint and audit green; uncommitted: .claude/agent-memory/ (untracked agent notes)
+- **Decisions**: Angular Vitest builder rejects vi.mock on relative imports, so the store injects a GENERATE_LOGO token (default generateLogo) and specs override it through TestBed; test seam only, no plan change
+- **Open questions**: none
+- **Watch out**: no git remote yet, ask before any push; S13 and S14 are high risk (security plus reviewer on opus); never use vi.mock on relative imports in specs; the stop gate stays red between test-first and implementation, so start tester and implementer in the same turn; a subagent's Write can report success without the file landing, check it exists; run team-init once src/web has real content (CLAUDE.md still says FILL IN)
+- **Next**: `/feature 0001`, then S8 (download service), S9 and S10 (S11 and S13 may run in parallel)
+
 ## 2026-11-01 | feature/0001-logo-randomizer | 33b469a
 - **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
 - **Done this session**: S4 test first and implemented (logo-generator.ts: generateLogo, isValidLogo, logoKey); committed 33b469a; plan ticked and progress log updated (5 of 15 steps)
