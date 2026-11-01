@@ -1,0 +1,13 @@
+import { TestBed } from '@angular/core/testing';
+import { App } from './app';
+
+describe('App', () => {
+  it('creates the app and renders the heading', async () => {
+    await TestBed.configureTestingModule({ imports: [App] }).compileComponents();
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(fixture.componentInstance).toBeTruthy();
+    expect(compiled.querySelector('h1')?.textContent).toContain('Logo randomizer');
+  });
+});
