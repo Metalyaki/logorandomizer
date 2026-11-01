@@ -15,6 +15,13 @@ const MAX_NAME_LENGTH = 25;
 /** Rough average glyph width in em; keeps a 25 character name inside the view box. */
 const AVG_CHAR_EM = 0.6;
 const MAX_FONT_SIZE = BOX / (AVG_CHAR_EM * MAX_NAME_LENGTH);
+/** Width available for the name text when sizing the font. */
+const TEXT_BOX_WIDTH = 400;
+/**
+ * Glyph width in em used only for the layout font size estimate. It is
+ * deliberately wider than AVG_CHAR_EM, which is the validation bound.
+ */
+const LAYOUT_CHAR_EM = 0.65;
 /** Shapes may lie partly outside the view box, but within this margin. */
 const COORD_MIN = -BOX;
 const COORD_MAX = BOX * 2;
@@ -33,7 +40,9 @@ function isColor(value: unknown): value is string {
 }
 
 function inRange(value: unknown): value is number {
-  return typeof value === 'number' && Number.isFinite(value) && value >= COORD_MIN && value <= COORD_MAX;
+  return (
+    typeof value === 'number' && Number.isFinite(value) && value >= COORD_MIN && value <= COORD_MAX
+  );
 }
 
 function isValidShape(value: unknown): value is Shape {
@@ -104,7 +113,11 @@ export function generateLogo(seed: number): Logo {
   const hue = between(0, 360);
   const background = hslToHex(hue, between(45, 80), between(25, 45));
   // Lightness ranges of background, shapes and plate never overlap, so fills stay distinct.
-  const plate = hslToHex(hue + 180, between(10, 30), rng() < 0.5 ? between(90, 96) : between(6, 12));
+  const plate = hslToHex(
+    hue + 180,
+    between(10, 30),
+    rng() < 0.5 ? between(90, 96) : between(6, 12),
+  );
 
   const shapes: Shape[] = [];
   const count = int(3, 6);
@@ -145,6 +158,9 @@ export function generateLogo(seed: number): Logo {
   }
 
   const name = generateName(rng);
-  const fontSize = Math.min(34, Math.floor(400 / (name.length * 0.65)));
+  const fontSize = Math.min(
+    Math.floor(MAX_FONT_SIZE),
+    Math.floor(TEXT_BOX_WIDTH / (name.length * LAYOUT_CHAR_EM)),
+  );
   return { name, background, shapes, plate, textColor: pickTextColor(plate), fontSize };
 }
