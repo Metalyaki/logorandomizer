@@ -2,6 +2,15 @@
 
 Newest first. Written by `/handoff` at the end of a session so the next session can start cheaply with `/clear`. Keep at most ten entries; older ones are removed (git history keeps them).
 
+## 2026-11-01 | feature/0001-logo-randomizer | 2a73ae8
+- **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
+- **Done this session**: S10 (app shell, styles, a11y) test first and implemented; committed 2a73ae8; plan ticked and progress log updated (10 of 15 steps)
+- **State**: build, 147 tests, lint and audit green; uncommitted: .claude/agent-memory/ (untracked agent notes)
+- **Decisions**: App is OnPush with global styles.css only; live region text is "New logo: {name}"; buttons Randomize, Previous, Download SVG; focus moves to Randomize when Previous disables
+- **Open questions**: none
+- **Watch out**: page not yet seen in a browser and button contrast not measured (S12 axe covers it); jsdom cannot test real Enter/Space, so S12 must; no git remote yet, ask before any push; S13 and S14 are high risk (security plus reviewer on opus); start tester and implementer in the same turn; run team-init once src/web has real content (CLAUDE.md still says FILL IN)
+- **Next**: `/feature 0001`, then S11 and S13 in parallel (devops), then S12
+
 ## 2026-11-01 | feature/0001-logo-randomizer | 0cb3d40
 - **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
 - **Done this session**: S8 (svg-download.ts: SvgDownload) and S9 (logo-svg.ts/.html: LogoSvg) test first and implemented; committed 0d42f72 and 0cb3d40; plan ticked and progress log updated (9 of 15 steps)
