@@ -1,0 +1,111 @@
+name: web-deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/web/**"
+      - ".github/workflows/web-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: ${{ vars.SWA_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: src/web
+        run: npm ci
+
+      - name: Build (production, budgets enforced)
+        working-directory: src/web
+        run: npm run build
+
+      # TODO(owner): "v1" is a moving major tag; the SHA below is the commit it pointed to
+      # when this file was written (looked up with gh api repos/Azure/static-web-apps-deploy/tags).
+      # The action publishes no finer-grained release tags. Dependabot keeps the SHA current.
+      - name: Deploy to Azure Static Web Apps
+        uses: Azure/static-web-apps-deploy@1a947af9992250f3bc2e68ad0754c0b0c11566c9 # v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: src/web/dist/web/browser
+          skip_app_build: true
+          skip_api_build: true
+
+      - name: Smoke check security headers and HTTPS redirect (SR6, SR7, SR8)
+        env:
+          SWA_URL: ${{ vars.SWA_URL }}
+        run: |
+          set -eu
+          if [ -z "${SWA_URL:-}" ]; then
+            echo "::error::Repository or environment variable SWA_URL is not set"
+            exit 1
+          fi
+          host="${SWA_URL#https://}"
+          host="${host#http://}"
+          host="${host%%/*}"
+          case "$host" in
+            *[!A-Za-z0-9.-]*|"") echo "::error::SWA_URL does not look like a plain host name"; exit 1 ;;
+          esac
+
+          # The new content can take a moment to be served; retry the header fetch.
+          headers=""
+          for attempt in 1 2 3 4 5 6; do
+            headers="$(curl -sI --max-time 20 "https://${host}/" | tr -d '\r' || true)"
+            if printf '%s\n' "$headers" | grep -qi '^content-security-policy:'; then
+              break
+            fi
+            echo "Attempt ${attempt}: CSP header not yet present, waiting"
+            sleep 10
+          done
+
+          fail=0
+          check() {
+            if ! printf '%s\n' "$headers" | grep -qiE "$1"; then
+              echo "::error::Missing or wrong header: $2"
+              fail=1
+            fi
+          }
+          check '^content-security-policy:.*default-src .self.;.*script-src .self.;.*frame-ancestors .none.' "Content-Security-Policy"
+          check '^x-content-type-options:[[:space:]]*nosniff[[:space:]]*$' "X-Content-Type-Options: nosniff"
+          check '^referrer-policy:[[:space:]]*no-referrer[[:space:]]*$' "Referrer-Policy: no-referrer"
+
+          http_headers="$(curl -sI --max-time 20 "http://${host}/" | tr -d '\r' || true)"
+          status="$(printf '%s\n' "$http_headers" | head -n 1 | awk '{print $2}')"
+          location="$(printf '%s\n' "$http_headers" | grep -i '^location:' | head -n 1 | awk '{print $2}')"
+          case "$status" in
+            301|302|307|308) ;;
+            *) echo "::error::http:// answered status '${status}', expected a redirect"; fail=1 ;;
+          esac
+          case "$location" in
+            https://*) ;;
+            *) echo "::error::http:// redirect does not point to https://"; fail=1 ;;
+          esac
+
+          if [ "$fail" -ne 0 ]; then
+            exit 1
+          fi
+          echo "Smoke check passed for ${host}"
