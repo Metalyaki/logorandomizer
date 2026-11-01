@@ -3,3 +3,10 @@
 CLAUDE.local.md
 .claude/agent-memory-local/
 .claude/worktrees/
+
+# Angular web app
+src/web/dist/
+src/web/node_modules/
+src/web/test-results/
+src/web/playwright-report/
+src/web/.angular/

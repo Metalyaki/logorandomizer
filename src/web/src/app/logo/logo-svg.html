@@ -1,0 +1,53 @@
+<svg
+  viewBox="0 0 512 512"
+  width="512"
+  height="512"
+  role="img"
+  [attr.aria-label]="'Logo: ' + logo().name"
+  [style.width]="'100%'"
+  [style.height]="'auto'"
+>
+  <rect x="0" y="0" width="512" height="512" [attr.fill]="logo().background" />
+  <g>
+    @for (shape of logo().shapes; track $index) {
+      @if (shape.kind === 'circle') {
+        <circle
+          [attr.cx]="shape.cx"
+          [attr.cy]="shape.cy"
+          [attr.r]="shape.r"
+          [attr.fill]="shape.fill"
+        />
+      } @else if (shape.kind === 'rect') {
+        <rect
+          [attr.x]="shape.x"
+          [attr.y]="shape.y"
+          [attr.width]="shape.width"
+          [attr.height]="shape.height"
+          [attr.rx]="shape.rx"
+          [attr.fill]="shape.fill"
+          [attr.transform]="rotation(shape)"
+        />
+      } @else {
+        <polygon [attr.points]="shape.points" [attr.fill]="shape.fill" />
+      }
+    }
+  </g>
+  <rect
+    x="0"
+    [attr.y]="plateY"
+    width="512"
+    [attr.height]="plateHeight"
+    [attr.fill]="logo().plate"
+  />
+  <text
+    [attr.x]="textX"
+    [attr.y]="textY"
+    text-anchor="middle"
+    dominant-baseline="central"
+    [attr.font-family]="fontStack"
+    font-weight="700"
+    [attr.font-size]="logo().fontSize"
+    [attr.fill]="logo().textColor"
+    [textContent]="logo().name"
+  ></text>
+</svg>
