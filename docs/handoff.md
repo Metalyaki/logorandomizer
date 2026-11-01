@@ -2,6 +2,15 @@
 
 Newest first. Written by `/handoff` at the end of a session so the next session can start cheaply with `/clear`. Keep at most ten entries; older ones are removed (git history keeps them).
 
+## 2026-11-01 | feature/0001-logo-randomizer | efbc48d
+- **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
+- **Done this session**: S11 (staticwebapp.config.json headers, e2e/config.spec.ts, 7 tests) and S13 (web-ci.yml, dependabot.yml) committed 0604fb9 and efbc48d; S13 security reviewed, no High, 3 findings fixed; plan ticked (12 of 15 steps)
+- **State**: build, 147 unit tests, lint and audit green; uncommitted: .claude/agent-memory/ (untracked agent notes)
+- **Decisions**: devops agent cannot write under src/web (hook scope), so src/web steps go to frontend; config.spec.ts uses __dirname, so no "type": "module" in package.json
+- **Open questions**: none
+- **Watch out**: S12 must set playwright testDir 'e2e' (else Playwright also picks up Vitest specs), change the CI install line to chromium firefox webkit, and refuse `/../` in serve.mjs; CI stays red until S12 lands and is unproven until a PR runs it; no git remote yet, ask before any push; S14 is high risk (security plus reviewer on opus, deploys need the owner's OK); run team-init once src/web has real content (CLAUDE.md still says FILL IN)
+- **Next**: `/feature 0001` for S12 (frontend), then S14, S15
+
 ## 2026-11-01 | feature/0001-logo-randomizer | 2a73ae8
 - **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
 - **Done this session**: S10 (app shell, styles, a11y) test first and implemented; committed 2a73ae8; plan ticked and progress log updated (10 of 15 steps)
