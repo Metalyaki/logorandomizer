@@ -2,6 +2,15 @@
 
 Newest first. Written by `/handoff` at the end of a session so the next session can start cheaply with `/clear`. Keep at most ten entries; older ones are removed (git history keeps them).
 
+## 2026-11-01 | chore/review-cleanups | 4658426
+- **Working on**: plan 0002 review cleanups (Status: done), refactor with no behavior change; branch built on feature/0001-logo-randomizer
+- **Done this session**: S1 characterization tests (401, seeds 1-200), S2 named font size constants, S3 plate geometry and FONT_STACK in logo.model.ts, S4 inject(DOCUMENT) in svg-download, S5 verify and review (reviewer: no Blocking or Should-fix)
+- **State**: ship checks green (dotnet checks skip, no sln), 548 unit tests, lint, e2e 102 on 3 browsers; uncommitted: .claude/agent-memory/ only
+- **Decisions**: none beyond the plan; formatter rewrapped two lines in logo-generator.ts (no behavior change)
+- **Open questions**: how 0001 and 0002 reach main (merge locally or PR without required checks); ask the owner before any push, PR or merge. Nice to have left open: exclude the characterization fixture and hash helper from tsconfig.app.json; prettier flags the generated fixture
+- **Watch out**: local-only test bed, no Actions, no deploy; the owner wants, at the very end, an explanation of how to run and use the app locally
+- **Next**: `/ship` (0002 done; 0001 and 0002 reach main only after owner approval)
+
 ## 2026-11-01 | chore/review-cleanups | 73014e2
 - **Working on**: plan 0002 review cleanups (docs/specs/0002-review-cleanups.plan.md, approved, recorded), a refactor with no behavior change; branched from feature/0001-logo-randomizer
 - **Done this session**: private repo https://github.com/Metalyaki/logorandomizer created, main and feature/0001 pushed (no PR); plan 0002 written and approved; deploy.md marked not deployed

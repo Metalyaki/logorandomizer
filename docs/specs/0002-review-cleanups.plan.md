@@ -30,3 +30,4 @@ No new behavior, so no new acceptance criteria. S1 is the safety net: it is writ
 - 2026-11-01: S3 done. Plate geometry and FONT_STACK live in logo.model.ts; svg-export and logo-svg share them. 548 unit tests, lint and e2e (102 on 3 browsers) green.
 - 2026-11-01: S4 done. svg-download uses inject(DOCUMENT); spec untouched; unit, lint, build, e2e (102, 3 browsers) green.
 - 2026-11-01: S5 done. Ship checks green, e2e 102 on 3 browsers, reviewer: no Blocking/Should-fix. Nice to have left open: fixture/hash files are type-checked by the app tsconfig (exclude them), prettier flags the generated fixture.
+- 2026-11-01: Done: S1-S5, plan done. Next: /ship.
