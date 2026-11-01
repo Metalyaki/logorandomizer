@@ -1,3 +1,14 @@
-<main>
+<main class="app">
   <h1>Logo randomizer</h1>
+  <div class="logo">
+    <app-logo-svg [logo]="store.current()" />
+  </div>
+  <p class="visually-hidden" aria-live="polite" aria-atomic="true">
+    New logo: {{ store.current().name }}
+  </p>
+  <div class="actions">
+    <button type="button" class="primary" #randomizeButton (click)="randomize()">Randomize</button>
+    <button type="button" [disabled]="!store.canGoBack()" (click)="previous()">Previous</button>
+    <button type="button" (click)="download()">Download SVG</button>
+  </div>
 </main>
