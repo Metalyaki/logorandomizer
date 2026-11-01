@@ -1,0 +1,26 @@
+# Plan 0002: review cleanups (refactor, behavior must not change)
+Branch: chore/review-cleanups (from feature/0001-logo-randomizer)   ·   Status: approved   ·   Risk: Low (refactor of code that touches no risk trigger)
+Approved: sha256:ce86bba400264a4e on 2026-11-01
+
+## Goal
+Resolve the three "Nice to have" findings of the 0001 reviews without changing any output. Same seed gives the same logo, the same SVG string, the same pixels.
+
+## Out of scope
+- HSTS header: separate decision (see the lead's explanation). If wanted, it becomes its own small step with `config.spec.ts` and a smoke check assertion.
+- Merging the two character-width numbers (0.6 and 0.65). They serve different jobs (validation bound versus layout estimate); merging would change generated font sizes.
+
+## Steps
+- [ ] S1 [tester] (TF) Characterization tests that pin current behavior: for seeds 1 to 200, a snapshot of `generateLogo` output and a hash of `toSvgString` output, stored as a committed fixture. Done when: tests pass on the unchanged code and fail if any field, coordinate, font size or SVG attribute changes.
+- [ ] S2 [frontend] `logo-generator.ts`: replace the literals in `Math.min(34, Math.floor(400 / (name.length * 0.65)))` with named constants. `34` becomes `Math.floor(MAX_FONT_SIZE)`; `400` becomes `TEXT_BOX_WIDTH`; `0.65` becomes `LAYOUT_CHAR_EM`, documented as the layout estimate, distinct from `AVG_CHAR_EM`. Done when: S1 tests and all existing tests pass unchanged.
+- [ ] S3 [frontend] One home for the plate geometry and font stack: export `PLATE_Y` (360), `PLATE_HEIGHT` (104), `TEXT_X` (256), `TEXT_Y` (412) and `FONT_STACK` from a single module (`logo.model.ts` or a new `logo-layout.ts`). `svg-export.ts` imports them; `logo-svg.ts` exposes them and `logo-svg.html` binds them with `[attr.*]`. Done when: S1 tests, the parity test over many seeds and the exact font stack test pass unchanged, no `innerHTML` or bypass calls, and e2e passes on three browsers.
+- [ ] S4 [frontend] `svg-download.ts`: use `inject(DOCUMENT)` instead of the global `document`, as plan 0001 S8 specified. Done when: `svg-download.spec.ts` passes without weakening any assertion and `e2e/download.spec.ts` passes on three browsers.
+- [ ] S5 [lead] Verify and review: `run-checks.ps1 -Set ship`, e2e on three browsers, then the reviewer (Low risk, no security review). Done when: no open Blocking, Critical or High findings. Update the 0001 plan's decisions log only if something unexpected came up.
+
+## Test strategy
+No new behavior, so no new acceptance criteria. S1 is the safety net: it is written first, committed green, and must stay green and unmodified through S2 to S4. No test may be changed to get green; if one must change, stop and ask.
+
+## Decisions log
+(empty)
+
+## Progress log
+(empty)
