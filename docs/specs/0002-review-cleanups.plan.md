@@ -10,7 +10,7 @@ Resolve the three "Nice to have" findings of the 0001 reviews without changing a
 - Merging the two character-width numbers (0.6 and 0.65). They serve different jobs (validation bound versus layout estimate); merging would change generated font sizes.
 
 ## Steps
-- [ ] S1 [tester] (TF) Characterization tests that pin current behavior: for seeds 1 to 200, a snapshot of `generateLogo` output and a hash of `toSvgString` output, stored as a committed fixture. Done when: tests pass on the unchanged code and fail if any field, coordinate, font size or SVG attribute changes.
+- [x] S1 [tester] (TF) Characterization tests that pin current behavior: for seeds 1 to 200, a snapshot of `generateLogo` output and a hash of `toSvgString` output, stored as a committed fixture. Done when: tests pass on the unchanged code and fail if any field, coordinate, font size or SVG attribute changes.
 - [ ] S2 [frontend] `logo-generator.ts`: replace the literals in `Math.min(34, Math.floor(400 / (name.length * 0.65)))` with named constants. `34` becomes `Math.floor(MAX_FONT_SIZE)`; `400` becomes `TEXT_BOX_WIDTH`; `0.65` becomes `LAYOUT_CHAR_EM`, documented as the layout estimate, distinct from `AVG_CHAR_EM`. Done when: S1 tests and all existing tests pass unchanged.
 - [ ] S3 [frontend] One home for the plate geometry and font stack: export `PLATE_Y` (360), `PLATE_HEIGHT` (104), `TEXT_X` (256), `TEXT_Y` (412) and `FONT_STACK` from a single module (`logo.model.ts` or a new `logo-layout.ts`). `svg-export.ts` imports them; `logo-svg.ts` exposes them and `logo-svg.html` binds them with `[attr.*]`. Done when: S1 tests, the parity test over many seeds and the exact font stack test pass unchanged, no `innerHTML` or bypass calls, and e2e passes on three browsers.
 - [ ] S4 [frontend] `svg-download.ts`: use `inject(DOCUMENT)` instead of the global `document`, as plan 0001 S8 specified. Done when: `svg-download.spec.ts` passes without weakening any assertion and `e2e/download.spec.ts` passes on three browsers.
@@ -25,3 +25,4 @@ No new behavior, so no new acceptance criteria. S1 is the safety net: it is writ
 ## Progress log
 (empty)
 - 2026-11-01: Plan approved and committed (73014e2). Workflow test bed, no deploy, no Actions. Next: /feature 0002, S1.
+- 2026-11-01: S1 done. 401 characterization tests (seeds 1-200) green on unchanged code; mutation checks fail as expected. Note: the 400 constant is hidden by the min(34) cap for these seeds, fontSize field itself is pinned.
