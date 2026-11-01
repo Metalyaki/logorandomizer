@@ -92,12 +92,3 @@ Newest first. Written by `/handoff` at the end of a session so the next session 
 - **Watch out**: S4 still needs logoKey, isValidLogo and generateLogo; no git remote yet, ask before any push; S13 and S14 are high risk (security plus reviewer on opus); the stop gate stays red between test-first and implementation, so run the tester and the implementer in the same turn; run team-init once src/web has real content (CLAUDE.md still says FILL IN)
 - **Next**: `/feature 0001`, then S4 (generator), then S6 and S7 (S8 to S10 follow; S11 and S13 may run in parallel)
 
-## 2026-11-01 | feature/0001-logo-randomizer | f386f90
-- **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
-- **Done this session**: S1 Angular 21 scaffold in src/web (CLI 21, Vitest, angular-eslint, Playwright and axe-core as dev packages), committed f386f90; plan ticked and progress log updated
-- **State**: build, test, lint and npm audit green; uncommitted: .claude/agent-memory/ (untracked agent notes)
-- **Decisions**: CLI 21 because Node 22.20 is too old for CLI 22; removed unused @angular/router, @angular/forms and .vscode/mcp.json; npm installs approved by the owner (subagents are blocked from installing, so the lead runs them with the owner's OK)
-- **Open questions**: none
-- **Watch out**: do not run the hook gate while a subagent runs `npm ci` (false build failures); no git remote yet, ask before any push; S13 and S14 are high risk (security plus reviewer on opus); run team-init again once src/web has real content (CLAUDE.md still says FILL IN)
-- **Next**: `/feature 0001`, then S2 (parallel steps S2 to S10 with S11 and S13 are allowed by the plan)
-
