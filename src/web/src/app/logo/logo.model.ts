@@ -35,3 +35,12 @@ export interface Logo {
 }
 
 export const VIEW_BOX = '0 0 512 512';
+
+/** Plate geometry and text anchor in viewBox units; shared by the inline SVG and the export. */
+export const PLATE_Y = 360;
+export const PLATE_HEIGHT = 104;
+export const TEXT_X = 256;
+export const TEXT_Y = 412;
+/** System font stack, no web font. */
+export const FONT_STACK =
+  "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";

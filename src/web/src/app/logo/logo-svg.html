@@ -32,13 +32,19 @@
       }
     }
   </g>
-  <rect x="0" y="360" width="512" height="104" [attr.fill]="logo().plate" />
+  <rect
+    x="0"
+    [attr.y]="plateY"
+    width="512"
+    [attr.height]="plateHeight"
+    [attr.fill]="logo().plate"
+  />
   <text
-    x="256"
-    y="412"
+    [attr.x]="textX"
+    [attr.y]="textY"
     text-anchor="middle"
     dominant-baseline="central"
-    font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+    [attr.font-family]="fontStack"
     font-weight="700"
     [attr.font-size]="logo().fontSize"
     [attr.fill]="logo().textColor"

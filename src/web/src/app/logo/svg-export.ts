@@ -1,13 +1,18 @@
-import { Logo, Shape, VIEW_BOX } from './logo.model';
+import {
+  FONT_STACK,
+  Logo,
+  PLATE_HEIGHT,
+  PLATE_Y,
+  Shape,
+  TEXT_X,
+  TEXT_Y,
+  VIEW_BOX,
+} from './logo.model';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const BOX = 512;
-const PLATE_Y = 360;
-const PLATE_HEIGHT = 104;
 const MAX_BASE_LENGTH = 40;
 const FALLBACK_FILE_NAME = 'logo.svg';
-/** System font stack, no web font. Escaped on output, so the quotes stay valid XML. */
-const FONT_STACK = "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
 
 const XML_ESCAPES: Record<string, string> = {
   '&': '&amp;',
@@ -45,13 +50,12 @@ function shapeToSvg(shape: Shape): string {
 /** Builds a self contained SVG document from a fixed set of elements; all values are XML-escaped. */
 export function toSvgString(logo: Logo): string {
   const shapes = logo.shapes.map(shapeToSvg).join('');
-  const textY = PLATE_Y + PLATE_HEIGHT / 2;
   return (
     `<svg xmlns="${SVG_NS}" viewBox="${VIEW_BOX}" width="${BOX}" height="${BOX}">` +
     `<rect x="0" y="0" width="${BOX}" height="${BOX}" fill="${esc(logo.background)}"/>` +
     `<g>${shapes}</g>` +
     `<rect x="0" y="${PLATE_Y}" width="${BOX}" height="${PLATE_HEIGHT}" fill="${esc(logo.plate)}"/>` +
-    `<text x="${BOX / 2}" y="${textY}" text-anchor="middle" dominant-baseline="central" font-family="${esc(FONT_STACK)}" font-weight="700" font-size="${esc(logo.fontSize)}" fill="${esc(logo.textColor)}">${esc(logo.name)}</text>` +
+    `<text x="${TEXT_X}" y="${TEXT_Y}" text-anchor="middle" dominant-baseline="central" font-family="${esc(FONT_STACK)}" font-weight="700" font-size="${esc(logo.fontSize)}" fill="${esc(logo.textColor)}">${esc(logo.name)}</text>` +
     `</svg>`
   );
 }

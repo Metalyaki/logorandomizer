@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { Logo, Rect } from './logo.model';
+import { FONT_STACK, Logo, PLATE_HEIGHT, PLATE_Y, Rect, TEXT_X, TEXT_Y } from './logo.model';
 
 /** Renders a logo as an inline SVG with Angular bindings only; mirrors toSvgString in svg-export.ts. */
 @Component({
@@ -9,6 +9,12 @@ import { Logo, Rect } from './logo.model';
 })
 export class LogoSvg {
   readonly logo = input.required<Logo>();
+
+  protected readonly plateY = PLATE_Y;
+  protected readonly plateHeight = PLATE_HEIGHT;
+  protected readonly textX = TEXT_X;
+  protected readonly textY = TEXT_Y;
+  protected readonly fontStack = FONT_STACK;
 
   /** rotate(...) transform around the rect centre, or null (attribute omitted) when not rotated. */
   protected rotation(shape: Rect): string | null {
