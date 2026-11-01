@@ -1,5 +1,7 @@
 # Deploy
 
+> **Status (2026-11-01): not deployed and not planned.** This app is a test of the agentic workflow. GitHub Actions is not available to the owner, so `web-ci.yml` and `web-deploy.yml` stay unused, and the required-check branch protection below must not be applied (the check would never report and block merges). The local gate is `pwsh -NoProfile -File .claude/hooks/run-checks.ps1 -Set ship` plus `npm run e2e`.
+
 The site is a static Angular build served by Azure Static Web Apps (Free tier). The workflow `.github/workflows/web-deploy.yml` builds `src/web` (job `build`, no secrets) and then uploads the built artifact in a second job `deploy`, on every push to `main` that touches `src/web`, or by manual run. Only the `deploy` job runs in the GitHub environment `production`, so a required reviewer must approve each run and the token is only available there.
 
 Nothing in this repository deploys from a developer machine. The commands below are for the owner.

@@ -2,6 +2,15 @@
 
 Newest first. Written by `/handoff` at the end of a session so the next session can start cheaply with `/clear`. Keep at most ten entries; older ones are removed (git history keeps them).
 
+## 2026-11-01 | chore/review-cleanups | 73014e2
+- **Working on**: plan 0002 review cleanups (docs/specs/0002-review-cleanups.plan.md, approved, recorded), a refactor with no behavior change; branched from feature/0001-logo-randomizer
+- **Done this session**: private repo https://github.com/Metalyaki/logorandomizer created, main and feature/0001 pushed (no PR); plan 0002 written and approved; deploy.md marked not deployed
+- **State**: 0001 is built, reviewed and green (147 unit, 102 e2e); 0002 has no steps done yet; uncommitted: .claude/agent-memory/ only
+- **Decisions**: this app is a workflow test bed, nothing deploys; GitHub Actions is unavailable, so the gate is `run-checks.ps1 -Set ship` plus `npm run e2e` locally; do not apply the required-check branch protection; HSTS not added (explained to owner, skipped)
+- **Open questions**: how 0001 and 0002 reach main (PR needs Actions-free flow: merge locally or PR without required checks); ask the owner before any push, PR or merge
+- **Watch out**: S1 is test first and the stop gate stays red between test and implementation, so start tester and implementer in the same turn; run `npm run build` before `npm run e2e`; no vi.mock on relative imports; the owner wants, at the very end, an explanation of how to run and use the app locally
+- **Next**: `/feature 0002` (resumes at S1 on chore/review-cleanups)
+
 ## 2026-11-01 | feature/0001-logo-randomizer | d136e18
 - **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md, Status: done)
 - **Done this session**: S14 (deploy workflow, docs/deploy.md), S15 (README, CHANGELOG, owner checklist), coverage pass (every AC and SR mapped to a passing test), two review rounds (security plus reviewer on opus): no open Blocking, Critical or High; ship checks green
@@ -83,11 +92,3 @@ Newest first. Written by `/handoff` at the end of a session so the next session 
 - **Watch out**: do not run the hook gate while a subagent runs `npm ci` (false build failures); no git remote yet, ask before any push; S13 and S14 are high risk (security plus reviewer on opus); run team-init again once src/web has real content (CLAUDE.md still says FILL IN)
 - **Next**: `/feature 0001`, then S2 (parallel steps S2 to S10 with S11 and S13 are allowed by the plan)
 
-## 2026-11-01 | feature/0001-logo-randomizer | 0335481
-- **Working on**: spec 0001, a random SVG logo generator in Angular 21 (plan: docs/specs/0001-logo-randomizer.plan.md)
-- **Done this session**: team setup committed on main (de860d1); spec and plan approved and recorded; spec and plan committed on the feature branch
-- **State**: checks green (nothing to check yet, no code); uncommitted: .claude/agent-memory/ (architect notes, untracked)
-- **Decisions**: Angular only, no backend; Vitest, angular-eslint, Playwright (3 browsers) and axe-core as dev packages; style-src 'self'; own e2e/serve.mjs; deploy workflow plus documented az command, no deploy without the owner's OK
-- **Open questions**: none
-- **Watch out**: no git remote yet (ask before any push, propose a private GitHub repo); S13 and S14 are high risk (CI, deploy): security plus reviewer on opus; team-init should run again once src/web exists (CLAUDE.md still says FILL IN)
-- **Next**: `/feature 0001` then S1, the Angular skeleton in src/web

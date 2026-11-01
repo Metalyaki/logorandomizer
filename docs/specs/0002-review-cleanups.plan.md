@@ -24,3 +24,4 @@ No new behavior, so no new acceptance criteria. S1 is the safety net: it is writ
 
 ## Progress log
 (empty)
+- 2026-11-01: Plan approved and committed (73014e2). Workflow test bed, no deploy, no Actions. Next: /feature 0002, S1.
