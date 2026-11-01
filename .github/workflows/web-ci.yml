@@ -2,14 +2,12 @@ name: web-ci
 
 on:
   pull_request:
-    paths:
-      - "src/web/**"
-      - ".github/workflows/web-ci.yml"
   push:
     branches: [main]
     paths:
       - "src/web/**"
       - ".github/workflows/web-ci.yml"
+      - ".github/workflows/web-deploy.yml"
 
 permissions:
   contents: read

@@ -50,7 +50,7 @@ Branch protection on `main` (Settings, Branches, rule or ruleset for `main`):
 - Require status checks to pass before merging, and add the check `web` (job `web` of workflow `web-ci`, shown in the PR as `web-ci / web`). Enable Require branches to be up to date before merging.
 - Block force pushes and do not allow bypassing.
 
-The deploy workflow runs only on pushes to `main`, so with this rule every commit it deploys has passed `web-ci`. The `web` check runs when `src/web` or the CI workflow changes, the same paths that trigger the deploy.
+The deploy workflow runs on pushes to `main` or a manual run (which the `production` environment limits to `main`), so with this rule every commit it deploys has passed `web-ci`. The `web` check runs on every pull request, so docs-only pull requests are not blocked by the required check.
 
 ### 4. Set the URL variable for the smoke check
 

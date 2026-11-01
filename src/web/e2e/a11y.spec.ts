@@ -4,6 +4,9 @@ import { downloadButton, openApp, previousButton, randomizeButton } from './help
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
+/** The whole rendered logo; the name alone can repeat between two logos. */
+const logoMarkup = (page: Page) => page.locator('app-logo-svg svg').evaluate((el) => el.outerHTML);
+
 async function scan(page: Page): Promise<void> {
   const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
   expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
@@ -27,15 +30,14 @@ test('keyboard: Space on Previous until disabled moves focus to Randomize (AC19)
   page,
 }) => {
   await openApp(page);
-  const name = () => page.locator('[aria-live="polite"]').textContent();
   await randomizeButton(page).click();
   await randomizeButton(page).click();
 
   await previousButton(page).focus();
   for (let i = 0; i < 5 && (await previousButton(page).isEnabled()); i++) {
-    const before = await name();
+    const before = await logoMarkup(page);
     await page.keyboard.press('Space');
-    await expect.poll(name).not.toBe(before);
+    await expect.poll(() => logoMarkup(page)).not.toBe(before);
   }
   await expect(previousButton(page)).toBeDisabled();
   await expect(randomizeButton(page)).toBeFocused();
@@ -66,17 +68,16 @@ test('keyboard: Enter and Space activate Randomize, focus stays, focus ring is v
   page,
 }) => {
   await openApp(page);
-  const name = () => page.locator('[aria-live="polite"]').textContent();
-  const before = await name();
+  const before = await logoMarkup(page);
 
   await randomizeButton(page).focus();
   await page.keyboard.press('Enter');
-  await expect.poll(name).not.toBe(before);
-  const second = await name();
+  await expect.poll(() => logoMarkup(page)).not.toBe(before);
+  const second = await logoMarkup(page);
   await expect(randomizeButton(page)).toBeFocused();
 
   await page.keyboard.press('Space');
-  await expect.poll(name).not.toBe(second);
+  await expect.poll(() => logoMarkup(page)).not.toBe(second);
   await expect(randomizeButton(page)).toBeFocused();
 
   const outline = await randomizeButton(page).evaluate((el) => {
